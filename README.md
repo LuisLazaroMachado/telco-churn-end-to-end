@@ -63,10 +63,13 @@ Logistic regression with 5 predictors, fitted in Excel with Solver
 ## Repository structure
 
 ```
-excel/   telco_churn_project.xlsx and .xlsm (with macro)
-data/    dataset description (CSV not included, see data/README.md)
-docs/    screenshots and decisions.md (assumptions and limitations)
+excel/    telco_churn_project.xlsx and .xlsm (with macro)
+python/   notebook, churn_utils.py and tests
+data/     dataset description (CSV not included, see data/README.md)
+docs/     screenshots and decisions.md (assumptions and limitations)
 ```
+
+To run it: `pip install -r requirements.txt`, then `python -m pytest python/tests`.
 
 ## Requirements
 
@@ -82,11 +85,35 @@ assumptions and are illustrative.
 
 - [x] Excel: cleaning, analysis, model, dashboard, VBA
 - [ ] SQL: same questions answered with queries
-- [ ] Python: pandas, scikit-learn, pytest
-- [ ] Trees and ensembles with SHAP
+- [x] Python: pandas, scikit-learn, pytest
+- [x] Trees and ensembles with SHAP
 - [ ] Power BI dashboard
 - [ ] LLM-generated retention messages via API
 
 ## License
 
 MIT
+
+## Phase 2: Python
+
+The same analysis repeated in Python (pandas, scikit-learn, SHAP) with the same
+train/test split and features, to validate the Excel model and compare it with
+tree ensembles.
+
+| Model | AUC (test) |
+|---|---|
+| Logistic regression, Excel (Solver) | 0.815 |
+| Logistic regression, Python | 0.818 |
+| Random Forest, 5 variables | 0.830 |
+| Random Forest, 45 columns | 0.838 |
+
+Python and Excel agree. Tree ensembles gain about 0.02 AUC over the simple
+regression, measured on a single train/test split.
+
+SHAP shows what drives the Random Forest predictions. Color shows the feature
+value, not risk. Contract type, tenure, fiber optic, no online security and
+electronic check payment are associated with higher churn (not proven causes).
+
+![SHAP summary](docs/images/07_shap_summary.png)
+
+Notebook: [python/01_churn_analysis.ipynb](python/01_churn_analysis.ipynb)
