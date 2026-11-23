@@ -1,5 +1,6 @@
 data/raw/*.csv
 .venv/
 __pycache__/
-.ipynb_checkpoints/data/churn.db
+.pytest_cache/
+data/churn.db
 .pytest_cache/
