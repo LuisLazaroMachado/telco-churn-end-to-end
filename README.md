@@ -67,6 +67,7 @@ excel/    telco_churn_project.xlsx and .xlsm (with macro)
 python/   notebook, churn_utils.py and tests
 data/     dataset description (CSV not included, see data/README.md)
 docs/     screenshots and decisions.md (assumptions and limitations)
+sql/      queries (SQLite)
 ```
 
 To run it: `pip install -r requirements.txt`, then `python -m pytest python/tests`.
@@ -84,7 +85,7 @@ assumptions and are illustrative.
 ## Roadmap
 
 - [x] Excel: cleaning, analysis, model, dashboard, VBA
-- [ ] SQL: same questions answered with queries
+- [x] SQL: same questions answered with queries
 - [x] Python: pandas, scikit-learn, pytest
 - [x] Trees and ensembles with SHAP
 - [ ] Power BI dashboard
@@ -117,3 +118,19 @@ electronic check payment are associated with higher churn (not proven causes).
 ![SHAP summary](docs/images/07_shap_summary.png)
 
 Notebook: [python/01_churn_analysis.ipynb](python/01_churn_analysis.ipynb)
+
+## Phase 3: SQL
+
+The same questions answered with SQL (SQLite). The CSV is loaded into a local
+database and queried from `sql/`.
+
+| Query | Result |
+|---|---|
+| Churn by contract (month-to-month / one year / two year) | 42.71% / 11.27% / 2.83% |
+| Churn by tenure (0-11 / 60-72 months) | 48.28% / 6.68% |
+| New, month-to-month, fiber optic customers | 70.55% (618 of 876) |
+
+All figures match the Excel and Python results.
+
+To run it: `python python/load_to_sqlite.py`, then
+`python python/run_query.py sql/02_churn_by_contract.sql`.
