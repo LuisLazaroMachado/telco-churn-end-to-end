@@ -68,7 +68,7 @@ python/   notebook, churn_utils.py and tests
 data/     dataset description (CSV not included, see data/README.md)
 docs/     screenshots and decisions.md (assumptions and limitations)
 sql/      queries (SQLite)
-powerbi/  DAX measures (the .pbix is not published)
+powerbi/  Power BI report (.pbix) and DAX measures
 ```
 
 To run it: `pip install -r requirements.txt`, then `python -m pytest python/tests`.
@@ -149,6 +149,7 @@ Filtering by fiber optic raises the highest-risk cell (month-to-month,
 
 ![Power BI, fiber optic](docs/images/09_powerbi_fiber.png)
 
-DAX measures: [powerbi/measures.dax](powerbi/measures.dax). The `.pbix` file is
-not included because it embeds the dataset; see `data/README.md` for the
-license note.
+Report file: [powerbi/telco_churn.pbix](powerbi/telco_churn.pbix) (requires
+Power BI Desktop, Windows). The data is embedded, so it opens without the CSV;
+Refresh will fail unless you point the source to your own copy.
+DAX measures: [powerbi/measures.dax](powerbi/measures.dax).
