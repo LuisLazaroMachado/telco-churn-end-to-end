@@ -3,18 +3,8 @@
 Predicting which telecom customers will leave, and what to do about it.
 Built on the IBM Telco Customer Churn dataset (7,043 customers, 21 columns).
 
-**Phase 1: Excel.** Power Query cleaning, pivot tables, logistic
-regression trained with Solver, evaluation, business-impact analysis,
-interactive dashboard and a VBA reset button.
-
-## Dashboard
-
-![Dashboard](docs/images/01_dashboard.png)
-
-Interactive: slicers filter the charts and heat map, and a scroll bar moves
-the decision threshold and updates precision, recall and F1.
-
-![Fiber optic view](docs/images/02_dashboard_fiber.png)
+The same churn analysis is built in four tools (Excel, Python, SQL and
+Power BI) and all of them return the same figures.
 
 ## Key findings
 
@@ -28,7 +18,22 @@ the decision threshold and updates precision, recall and F1.
 **Recommendation:** offer incentives to move month-to-month customers to
 longer contracts, focusing on their first year.
 
-## Model
+## Phase 1: Excel
+
+Power Query cleaning, pivot tables, logistic regression trained with Solver,
+evaluation, business-impact analysis, interactive dashboard and a VBA reset
+button.
+
+### Dashboard
+
+![Dashboard](docs/images/01_dashboard.png)
+
+Interactive: slicers filter the charts and heat map, and a scroll bar moves
+the decision threshold and updates precision, recall and F1.
+
+![Fiber optic view](docs/images/02_dashboard_fiber.png)
+
+### Model
 
 Logistic regression with 5 predictors, fitted in Excel with Solver
 (maximum likelihood). Evaluated on a held-out test set (20%, 1,408 customers).
@@ -38,12 +43,12 @@ Logistic regression with 5 predictors, fitted in Excel with Solver
 | Precision | 54.5% |
 | Recall | 74.1% |
 | F1 | 62.8% |
-| AUC | about 0.82 |
+| AUC | 0.815 |
 
 ![Confusion matrix](docs/images/06_confusion_matrix.png)
 ![ROC curve](docs/images/05_roc_curve.png)
 
-## How it was built
+### How it was built
 
 1. **Cleaning (Power Query):** typed columns, fixed 11 blank `TotalCharges`,
    created the target flag and model variables.
@@ -59,42 +64,6 @@ Logistic regression with 5 predictors, fitted in Excel with Solver
 4. **Evaluation:** confusion matrix, precision/recall/F1, ROC and AUC.
 5. **Business impact:** net benefit by threshold under editable assumptions.
 6. **Automation:** VBA macro that resets slicers and threshold.
-
-## Repository structure
-
-```
-excel/    telco_churn_project.xlsx and .xlsm (with macro)
-python/   notebook, churn_utils.py and tests
-data/     dataset description (CSV not included, see data/README.md)
-docs/     screenshots and decisions.md (assumptions and limitations)
-sql/      queries (SQLite)
-powerbi/  Power BI report (.pbix) and DAX measures
-```
-
-To run it: `pip install -r requirements.txt`, then `python -m pytest python/tests`.
-
-## Requirements
-
-Excel 2019 or later (tested in Excel 2021). Power Query, Solver and the
-VBA macro are required. In the .xlsm version, enable macros when opening.
-
-## Limitations
-
-See [docs/decisions.md](docs/decisions.md). Business figures use invented
-assumptions and are illustrative.
-
-## Roadmap
-
-- [x] Excel: cleaning, analysis, model, dashboard, VBA
-- [x] SQL: same questions answered with queries
-- [x] Python: pandas, scikit-learn, pytest
-- [x] Trees and ensembles with SHAP
-- [x] Power BI dashboard
-- [ ] LLM-generated retention messages via API
-
-## License
-
-MIT
 
 ## Phase 2: Python
 
@@ -119,6 +88,9 @@ electronic check payment are associated with higher churn (not proven causes).
 ![SHAP summary](docs/images/07_shap_summary.png)
 
 Notebook: [python/01_churn_analysis.ipynb](python/01_churn_analysis.ipynb)
+
+To run the tests: `pip install -r requirements.txt`, then
+`python -m pytest python/tests`.
 
 ## Phase 3: SQL
 
@@ -153,3 +125,39 @@ Report file: [powerbi/telco_churn.pbix](powerbi/telco_churn.pbix) (requires
 Power BI Desktop, Windows). The data is embedded, so it opens without the CSV;
 Refresh will fail unless you point the source to your own copy.
 DAX measures: [powerbi/measures.dax](powerbi/measures.dax).
+
+## Repository structure
+
+```
+excel/    telco_churn_project.xlsx and .xlsm (with macro)
+python/   notebook, churn_utils.py, tests, load_to_sqlite.py and run_query.py
+sql/      queries (SQLite)
+powerbi/  Power BI report (.pbix) and DAX measures
+data/     dataset description (CSV not included, see data/README.md)
+docs/     screenshots and decisions.md (assumptions and limitations)
+```
+
+## Requirements
+
+- **Excel:** Excel 2019 or later (tested in Excel 2021) with Power Query and
+  Solver. In the .xlsm version, enable macros when opening.
+- **Python:** Python 3 and the packages in `requirements.txt`.
+- **Power BI:** Power BI Desktop (Windows).
+
+## Limitations
+
+See [docs/decisions.md](docs/decisions.md). Business figures use invented
+assumptions and are illustrative.
+
+## Roadmap
+
+- [x] Excel: cleaning, analysis, model, dashboard, VBA
+- [x] SQL: same questions answered with queries
+- [x] Python: pandas, scikit-learn, pytest
+- [x] Trees and ensembles with SHAP
+- [x] Power BI dashboard
+- [ ] LLM-generated retention messages via API
+
+## License
+
+MIT
