@@ -68,6 +68,7 @@ python/   notebook, churn_utils.py and tests
 data/     dataset description (CSV not included, see data/README.md)
 docs/     screenshots and decisions.md (assumptions and limitations)
 sql/      queries (SQLite)
+powerbi/  DAX measures (the .pbix is not published)
 ```
 
 To run it: `pip install -r requirements.txt`, then `python -m pytest python/tests`.
@@ -88,7 +89,7 @@ assumptions and are illustrative.
 - [x] SQL: same questions answered with queries
 - [x] Python: pandas, scikit-learn, pytest
 - [x] Trees and ensembles with SHAP
-- [ ] Power BI dashboard
+- [x] Power BI dashboard
 - [ ] LLM-generated retention messages via API
 
 ## License
@@ -134,3 +135,20 @@ All figures match the Excel and Python results.
 
 To run it: `python python/load_to_sqlite.py`, then
 `python python/run_query.py sql/02_churn_by_contract.sql`.
+
+## Phase 4: Power BI
+
+The same dashboard rebuilt in Power BI with DAX measures: KPI cards, churn
+rate by contract and by tenure group, a contract x tenure heat map and an
+`InternetService` slicer.
+
+![Power BI dashboard](docs/images/08_powerbi_dashboard.png)
+
+Filtering by fiber optic raises the highest-risk cell (month-to-month,
+0-11 months) from 51.94% to 70.55%, matching the Excel, Python and SQL results.
+
+![Power BI, fiber optic](docs/images/09_powerbi_fiber.png)
+
+DAX measures: [powerbi/measures.dax](powerbi/measures.dax). The `.pbix` file is
+not included because it embeds the dataset; see `data/README.md` for the
+license note.
