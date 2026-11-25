@@ -3,7 +3,7 @@
 Predicting which telecom customers will leave, and what to do about it.
 Built on the IBM Telco Customer Churn dataset (7,043 customers, 21 columns).
 
-**Phase 1 (done): Excel.** Power Query cleaning, pivot tables, logistic
+**Phase 1: Excel.** Power Query cleaning, pivot tables, logistic
 regression trained with Solver, evaluation, business-impact analysis,
 interactive dashboard and a VBA reset button.
 

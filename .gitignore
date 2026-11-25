@@ -1,4 +1,3 @@
-@'
 data/raw/*.csv
 data/churn.db
 .venv/
@@ -6,5 +5,3 @@ __pycache__/
 .ipynb_checkpoints/
 .pytest_cache/
 .env
-'@ | Set-Content .gitignore -Encoding utf8
-Get-Content .gitignore
