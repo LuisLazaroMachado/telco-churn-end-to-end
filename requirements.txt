@@ -8,3 +8,4 @@ ipykernel
 pytest
 openai
 python-dotenv
+streamlit

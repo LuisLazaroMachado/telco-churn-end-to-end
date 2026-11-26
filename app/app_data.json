@@ -1,0 +1,90 @@
+{
+  "overall": {
+    "customers": 7043,
+    "churned": 1869,
+    "churn_pct": 26.54
+  },
+  "by_contract": [
+    {
+      "group": "Month-to-month",
+      "customers": 3875,
+      "churned": 1655,
+      "churn_pct": 42.71
+    },
+    {
+      "group": "One year",
+      "customers": 1473,
+      "churned": 166,
+      "churn_pct": 11.27
+    },
+    {
+      "group": "Two year",
+      "customers": 1695,
+      "churned": 48,
+      "churn_pct": 2.83
+    }
+  ],
+  "by_tenure": [
+    {
+      "group": "0-11",
+      "customers": 2069,
+      "churned": 999,
+      "churn_pct": 48.28
+    },
+    {
+      "group": "12-23",
+      "customers": 1047,
+      "churned": 309,
+      "churn_pct": 29.51
+    },
+    {
+      "group": "24-35",
+      "customers": 876,
+      "churned": 193,
+      "churn_pct": 22.03
+    },
+    {
+      "group": "36-47",
+      "customers": 748,
+      "churned": 146,
+      "churn_pct": 19.52
+    },
+    {
+      "group": "48-59",
+      "customers": 820,
+      "churned": 123,
+      "churn_pct": 15.0
+    },
+    {
+      "group": "60-72",
+      "customers": 1483,
+      "churned": 99,
+      "churn_pct": 6.68
+    }
+  ],
+  "high_risk": {
+    "customers": 876,
+    "churned": 618,
+    "churn_pct": 70.55
+  },
+  "model": {
+    "intercept": -2.5023228994296964,
+    "coefficients": {
+      "tenure_s": -2.4764200711229454,
+      "MonthlyCharges_s": 1.678723706076621,
+      "IsMonthToMonth": 1.1306775445148851,
+      "IsFiber": 0.7803642058190177,
+      "IsElectronicCheck": 0.5905752447459223
+    },
+    "scaling": {
+      "tenure": 72,
+      "MonthlyCharges": 120
+    },
+    "train_size": 5635,
+    "test_size": 1408
+  },
+  "auc": {
+    "logistic_regression_python": 0.818,
+    "random_forest_5_features": 0.83
+  }
+}
