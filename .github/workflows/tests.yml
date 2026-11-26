@@ -5,6 +5,31 @@ on: [push, pull_request]
 jobs:
   pytest:
     runs-on: ubuntu-latest
+
+    # Temporary PostgreSQL server for the SQL tests. It only exists while the
+    # job runs and holds made-up data, so the password below is not a secret.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: telco_app
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: telco
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGDATABASE: telco
+      PGUSER: telco_app
+      PGPASSWORD: ci-only-password
+
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
@@ -12,4 +37,4 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      - run: python -m pytest python/tests -v
+      - run: python -m pytest python/tests -v -rs

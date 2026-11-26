@@ -101,21 +101,41 @@ Notebook: [python/01_churn_analysis.ipynb](python/01_churn_analysis.ipynb)
 To run the tests: `pip install -r requirements.txt`, then
 `python -m pytest python/tests`.
 
-## Phase 3: SQL
+## Phase 3: SQL (PostgreSQL)
 
-The same questions answered with SQL (SQLite). The CSV is loaded into a local
-database and queried from `sql/`.
+The flat CSV is split into a relational schema of five tables with primary
+and foreign keys, `CHECK` constraints and indexes
+([sql/schema.sql](sql/schema.sql)).
 
-| Query | Result |
-|---|---|
-| Churn by contract (month-to-month / one year / two year) | 42.71% / 11.27% / 2.83% |
-| Churn by tenure (0-11 / 60-72 months) | 48.28% / 6.68% |
-| New, month-to-month, fiber optic customers | 70.55% (618 of 876) |
+| Table | Contents | Keys |
+|---|---|---|
+| `customers` | Demographics | PK `customer_id` |
+| `accounts` | Tenure, charges and churn | PK/FK `customer_id`, FK `contract_id`, FK `payment_method_id` |
+| `services` | Phone, internet and add-ons (`NULL` = not applicable) | PK/FK `customer_id` |
+| `contracts` | The 3 contract types | PK `contract_id` |
+| `payment_methods` | The 4 payment methods, automatic or not | PK `payment_method_id` |
 
-All figures match the Excel and Python results.
+| Query | Technique | Result |
+|---|---|---|
+| Churn by contract | `JOIN`, `FILTER`, window `SUM() OVER ()` | 42.71% / 11.27% / 2.83% |
+| Churn by tenure | CTE, running total | 48.28% (0-11 months) to 6.68% (60-72); 53.45% of all churn happens in the first year |
+| Highest-risk group | Three-table `JOIN` | 70.55% (618 of 876) |
+| Contract x tenure matrix | Pivot with `FILTER` | 51.94% for new month-to-month customers, the same as Power BI |
+| Revenue lost | CTE, window function | Month-to-month contracts account for 86.86% of the monthly charges lost to churn |
+| Riskiest segments | `RANK() OVER (PARTITION BY ...)`, `HAVING` | Fiber optic + electronic check ranks first in every contract type (60.37% of 1,307 month-to-month customers) |
+| Protection add-ons | Boolean arithmetic, CTE | Churn falls from 56.67% with no add-ons to 5.32% with all four (an association, not a proven cause) |
 
-To run it: `python python/load_to_sqlite.py`, then
-`python python/run_query.py sql/02_churn_by_contract.sql`.
+All figures match the Excel and Python results. The SQL tests run against a
+temporary PostgreSQL 17 server in GitHub Actions: query results are checked
+against pandas on made-up data, and against the official figures locally.
+
+To run it, add the PostgreSQL settings to `.env` (`PGHOST`, `PGPORT`,
+`PGDATABASE`, `PGUSER`, `PGPASSWORD`), then:
+
+```
+python python/load_to_postgres.py
+python python/run_query.py "sql/0*.sql"
+```
 
 ## Phase 4: Power BI
 
@@ -208,8 +228,8 @@ To run it locally: `streamlit run app/streamlit_app.py`
 
 ```
 excel/    telco_churn_project.xlsx and .xlsm (with macro)
-python/   notebook, churn_utils.py, retention_message.py, export_app_data.py, tests, load_to_sqlite.py and run_query.py
-sql/      queries (SQLite)
+python/   notebook, churn_utils.py, retention_message.py, export_app_data.py, load_to_postgres.py, run_query.py and tests
+sql/      schema.sql and 8 analysis queries (PostgreSQL)
 powerbi/  Power BI report (.pbix) and DAX measures
 app/      Streamlit web app and its summary data
 data/     dataset description (CSV not included, see data/README.md)
@@ -222,6 +242,7 @@ docs/     screenshots and decisions.md (assumptions and limitations)
 - **Excel:** Excel 2019 or later (tested in Excel 2021) with Power Query and
   Solver. In the .xlsm version, enable macros when opening.
 - **Python:** Python 3 and the packages in `requirements.txt`.
+- **SQL:** PostgreSQL (tested with version 17).
 - **Power BI:** Power BI Desktop (Windows).
 - **LLM (Phase 5, optional):** an API key for an OpenAI-compatible provider.
 
@@ -233,7 +254,7 @@ assumptions and are illustrative.
 ## Roadmap
 
 - [x] Excel: cleaning, analysis, model, dashboard, VBA
-- [x] SQL: same questions answered with queries
+- [x] SQL: relational PostgreSQL schema and advanced queries
 - [x] Python: pandas, scikit-learn, pytest
 - [x] Trees and ensembles with SHAP
 - [x] Power BI dashboard
