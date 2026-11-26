@@ -6,6 +6,9 @@ Built on the IBM Telco Customer Churn dataset (7,043 customers, 21 columns).
 The same churn analysis is built in four tools (Excel, Python, SQL and
 Power BI) and all of them return the same figures.
 
+A final phase uses an LLM to turn the model's predictions into personalised
+retention messages.
+
 ## Key findings
 
 | Finding | Value |
@@ -126,11 +129,61 @@ Power BI Desktop, Windows). The data is embedded, so it opens without the CSV;
 Refresh will fail unless you point the source to your own copy.
 DAX measures: [powerbi/measures.dax](powerbi/measures.dax).
 
+## Phase 5: LLM retention messages
+
+The Phase 2 logistic regression scores the test customers who have not
+churned yet. The customers with the highest churn probability get a short
+retention message written by an LLM, in English or Spanish.
+
+The top 3 customers are all new (3 months), month-to-month, fiber optic
+customers paying by electronic check, with churn probabilities of 0.77 to
+0.80: the same highest-risk group found in Phases 1 to 4.
+
+Example output for the top customer (real run, English):
+
+> Hi there! We hope you are enjoying your fiber optic internet experience. As
+> a valued customer, we would love to help you save on your service. You are
+> eligible to receive a discount simply by switching your plan to a one-year
+> or two-year contract. It is a fantastic way to enjoy peace of mind and
+> uninterrupted connectivity. Reach out to our friendly support team today to
+> update your account and take advantage of this offer!
+
+Design choices:
+
+- **Privacy:** only seven profile fields are sent (tenure, contract, internet
+  service, online security, tech support, payment method and monthly
+  charges). No customer ID.
+- **No invented promises:** the LLM picks one offer from a fixed list and is
+  told not to mention prices, percentages or the churn prediction.
+- **Cost control:** at most 5 customers per run, and a `--dry-run` mode that
+  prints the prompts without calling the API.
+- **Any provider:** works with any OpenAI-compatible endpoint; currently
+  configured for Google Gemini.
+- **Tested offline:** the tests replace the LLM with a fake client and never
+  call the API.
+
+To run it, create a `.env` file in the project root (it is ignored by git):
+
+```
+LLM_API_KEY=your-api-key
+LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+LLM_MODEL=your-model-name
+```
+
+Then:
+
+```
+python python/retention_message.py --dry-run
+python python/retention_message.py --n 3 --lang es
+```
+
+Script: [python/retention_message.py](python/retention_message.py)
+
 ## Repository structure
 
 ```
 excel/    telco_churn_project.xlsx and .xlsm (with macro)
-python/   notebook, churn_utils.py, tests, load_to_sqlite.py and run_query.py
+python/   notebook, churn_utils.py, retention_message.py, tests, load_to_sqlite.py and run_query.py
 sql/      queries (SQLite)
 powerbi/  Power BI report (.pbix) and DAX measures
 data/     dataset description (CSV not included, see data/README.md)
@@ -143,7 +196,7 @@ docs/     screenshots and decisions.md (assumptions and limitations)
   Solver. In the .xlsm version, enable macros when opening.
 - **Python:** Python 3 and the packages in `requirements.txt`.
 - **Power BI:** Power BI Desktop (Windows).
-
+- **LLM (Phase 5, optional):** an API key for an OpenAI-compatible provider.
 ## Limitations
 
 See [docs/decisions.md](docs/decisions.md). Business figures use invented
@@ -156,8 +209,7 @@ assumptions and are illustrative.
 - [x] Python: pandas, scikit-learn, pytest
 - [x] Trees and ensembles with SHAP
 - [x] Power BI dashboard
-- [ ] LLM-generated retention messages via API
-
+- [x] LLM-generated retention messages via API
 ## License
 
 MIT

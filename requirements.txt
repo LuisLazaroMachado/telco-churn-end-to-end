@@ -6,3 +6,5 @@ shap
 jupyter
 ipykernel
 pytest
+openai
+python-dotenv
