@@ -2,6 +2,9 @@
 
 [![tests](https://github.com/LuisLazaroMachado/telco-churn-end-to-end/actions/workflows/tests.yml/badge.svg)](https://github.com/LuisLazaroMachado/telco-churn-end-to-end/actions/workflows/tests.yml)
 
+**Try it live:** [churn risk simulator](https://telco-churn-end-to-end-luis-lazaro.streamlit.app/).
+Build a customer, read their churn risk like a phone bill and generate a
+retention message with an LLM.
 
 Predicting which telecom customers will leave, and what to do about it.
 Built on the IBM Telco Customer Churn dataset (7,043 customers, 21 columns).
@@ -182,15 +185,36 @@ python python/retention_message.py --n 3 --lang es
 
 Script: [python/retention_message.py](python/retention_message.py)
 
+## Web app
+
+Live: [telco-churn-end-to-end-luis-lazaro.streamlit.app](https://telco-churn-end-to-end-luis-lazaro.streamlit.app/)
+
+A Streamlit app built on the Phase 2 logistic regression, with three tabs:
+
+- **Risk simulator:** pick a customer profile and see each input's effect on
+  the risk score, laid out like a phone bill, plus the final probability.
+  The default customer scores 80%, the same as the Phase 5 script.
+- **What drives churn:** the key figures and charts from Phases 1 to 4.
+- **About the model:** AUC comparison and limitations.
+
+The app stores only the model coefficients and summary figures
+(`app/app_data.json`, created by `python/export_app_data.py`); no customer
+rows are published. Live LLM messages are limited to 3 per visit, with a
+saved real example as fallback.
+
+To run it locally: `streamlit run app/streamlit_app.py`
+
 ## Repository structure
 
 ```
 excel/    telco_churn_project.xlsx and .xlsm (with macro)
-python/   notebook, churn_utils.py, retention_message.py, tests, load_to_sqlite.py and run_query.py
+python/   notebook, churn_utils.py, retention_message.py, export_app_data.py, tests, load_to_sqlite.py and run_query.py
 sql/      queries (SQLite)
 powerbi/  Power BI report (.pbix) and DAX measures
+app/      Streamlit web app and its summary data
 data/     dataset description (CSV not included, see data/README.md)
 docs/     screenshots and decisions.md (assumptions and limitations)
+.github/  GitHub Actions workflow that runs the tests
 ```
 
 ## Requirements
@@ -200,6 +224,7 @@ docs/     screenshots and decisions.md (assumptions and limitations)
 - **Python:** Python 3 and the packages in `requirements.txt`.
 - **Power BI:** Power BI Desktop (Windows).
 - **LLM (Phase 5, optional):** an API key for an OpenAI-compatible provider.
+
 ## Limitations
 
 See [docs/decisions.md](docs/decisions.md). Business figures use invented
@@ -213,6 +238,8 @@ assumptions and are illustrative.
 - [x] Trees and ensembles with SHAP
 - [x] Power BI dashboard
 - [x] LLM-generated retention messages via API
+- [x] Web app with risk simulator (Streamlit)
+
 ## License
 
 MIT
