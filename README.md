@@ -1,5 +1,8 @@
 # Telco Customer Churn: End-to-End Analysis
 
+[![tests](https://github.com/LuisLazaroMachado/telco-churn-end-to-end/actions/workflows/tests.yml/badge.svg)](https://github.com/LuisLazaroMachado/telco-churn-end-to-end/actions/workflows/tests.yml)
+
+
 Predicting which telecom customers will leave, and what to do about it.
 Built on the IBM Telco Customer Churn dataset (7,043 customers, 21 columns).
 
